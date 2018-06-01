@@ -49,6 +49,22 @@ def printFiltered(ip, port, filename):
             print(','.join(row))
 
 
+def main(args):
+    global col
+    
+    header = getHeader(args.filename)
+    col = dict([(header[i], i) for i in range(len(header))])
+
+    if ( args.ip is None ):
+        production_ip = getProductionIp(args.port, args.filename)
+    else:
+        production_ip = args.ip
+
+    print(','.join(header), end='')
+
+    printFiltered(production_ip, args.port, args.filename)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Program filters only the flows that have: i) given IP address in the Destination; ii) given port in the destPort; iii) contains S in the Source state.",
                                      usage='%(prog)s --ip <ip_address> --port <port>')
@@ -61,14 +77,4 @@ if __name__ == '__main__':
     # example call
     # args = parser.parse_args(['-i','147.32.83.179', '-p','80','-f','./omnia1/Traffic/2017-07-22-147.32.83.179.binetflow', '-d', '1'])
 
-    header = getHeader(args.filename)
-    col = dict([(header[i], i) for i in range(len(header))])
-
-    if ( args.ip is None ):
-        production_ip = getProductionIp(args.port, args.filename)
-    else:
-        production_ip = args.ip
-
-    print(','.join(header), end='')
-
-    printFiltered(production_ip, args.port, args.filename)
+    main(args)
