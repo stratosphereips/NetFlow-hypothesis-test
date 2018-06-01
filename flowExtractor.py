@@ -1,7 +1,5 @@
 #!/usr/bin/env python3.6 -u
 # Author: Karel Durkota
-# 
-# This script extracts flows that are related to specific IP address and specific port. This is convenient preprocessing for further hypothesis testings.
 
 import sys
 import argparse
@@ -17,6 +15,7 @@ def getHeader(filename):
     global col
     with open(filename, "r") as csvfile:
         return csvfile.readline().split(',')
+    print(col)
 
 
 def getProductionIp(port, filename):
@@ -57,18 +56,19 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--port', help='The destination port. The header line is assumed to contain Dport attribute.', action='store', required=True, type=int)
     parser.add_argument('-f', '--filename', help='The CSV file with netflows. The first line is assumed to be header.', action='store', required=argparse.FileType('r'))
     parser.add_argument('-d', '--debug', help='Amount of debugging. This shows inner information about the run.', action='store', default=0, required=False, type=int)
-    #args = parser.parse_args(['-p','80','-f','./omnia1/Traffic/2017-07-21-147.32.83.179.binetflow', '-d', '1'])
-    args = parser.parse_args(['-i','147.32.83.179', '-p','80','-f','./omnia1/Traffic/2017-07-22-147.32.83.179.binetflow', '-d', '1'])
+    args = parser.parse_args()
 
-    #parseHeader(args.filename)
+    # example call
+    # args = parser.parse_args(['-i','147.32.83.179', '-p','80','-f','./omnia1/Traffic/2017-07-22-147.32.83.179.binetflow', '-d', '1'])
+
+    header = getHeader(args.filename)
+    col = dict([(header[i], i) for i in range(len(header))])
 
     if ( args.ip is None ):
         production_ip = getProductionIp(args.port, args.filename)
     else:
         production_ip = args.ip
 
-    header = getHeader(args.filename)
-    col = dict([(header[i], i) for i in range(len(header))])
     print(','.join(header), end='')
 
     printFiltered(production_ip, args.port, args.filename)
