@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.6 -u
 # Author: Karel Durkota
+# 
+# This script extracts flows that are related to specific IP address and specific port. This is convenient preprocessing for further hypothesis testings.
 
 import sys
 import argparse
